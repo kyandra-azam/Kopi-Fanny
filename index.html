@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dimsum Mentaiku | Dimsum Mentai, Bakar &amp; Saus Keju</title>
+  <meta name="description" content="Dimsum Mentaiku: dimsum mentai, dimsum bakar, dan dimsum saus keju. Lihat menu dan harga, pesan langsung lewat WhatsApp.">
+  <meta name="theme-color" content="#FAF5EF">
+  <meta property="og:title" content="Dimsum Mentaiku">
+  <meta property="og:description" content="Lihat menu dan harga, pesan langsung lewat WhatsApp.">
+  <meta property="og:image" content="images/hero.jpg">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header" id="top">
+    <div class="container header__inner">
+      <a href="#top" class="logo">Dimsum <span>Mentaiku</span></a>
+      <nav class="nav" aria-label="Navigasi utama">
+        <a href="#menu">Menu</a>
+        <a href="#cara-pesan">Cara Pesan</a>
+        <a href="#galeri">Galeri</a>
+        <a href="#lokasi">Lokasi</a>
+      </nav>
+      <a href="#" class="btn btn--small js-wa">Pesan</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero__inner">
+        <div class="hero__text">
+          <span class="badge">Menu Bestseller</span>
+          <h1>Dimsum <em>Mentaiku</em></h1>
+          <p>Dimsum mentai yang dibakar dengan saus gurih. Pilih menu, tekan pesan, dan langsung ngobrol dengan kami lewat WhatsApp.</p>
+          <div class="hero__cta">
+            <a href="#" class="btn js-wa">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5-.1-.2-1.2-1.6-1.2-3s.8-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.2c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.7 1.2 1.5 1.9 1 .9 1.9 1.2 2.2 1.3.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.8-.1 1.4Z"/></svg>
+              Pesan via WhatsApp
+            </a>
+            <a href="#menu" class="btn btn--ghost">Lihat Menu</a>
+          </div>
+        </div>
+        <figure class="hero__photo">
+          <img src="images/hero.jpg" alt="Dimsum mentai bakar dalam keranjang bambu" width="1400" height="650">
+        </figure>
+      </div>
+    </section>
+
+    <!-- MENU -->
+    <section class="section" id="menu">
+      <div class="container">
+        <h2 class="section__title">Menu Utama</h2>
+        <p class="section__lead">Tekan tombol + untuk menambah ke pesanan, lalu kirim lewat WhatsApp.</p>
+        <div class="menu-grid" id="menuGrid"></div>
+
+        <h3 class="subtitle">Tambahan</h3>
+        <div class="menu-grid menu-grid--single" id="extraGrid"></div>
+      </div>
+    </section>
+
+    <!-- CARA PESAN -->
+    <section class="section section--alt" id="cara-pesan">
+      <div class="container">
+        <h2 class="section__title">Cara Pesan</h2>
+        <ol class="steps">
+          <li><span class="steps__num">1</span><div><h3>Pilih menu</h3><p>Tambahkan dimsum favoritmu ke pesanan.</p></div></li>
+          <li><span class="steps__num">2</span><div><h3>Tekan pesan</h3><p>Pesananmu otomatis tertulis di WhatsApp.</p></div></li>
+          <li><span class="steps__num">3</span><div><h3>Konfirmasi</h3><p>Isi nama dan alamat, lalu tunggu konfirmasi dari kami.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- GALERI -->
+    <section class="section" id="galeri">
+      <div class="container">
+        <h2 class="section__title">Galeri</h2>
+        <div class="gallery">
+          <img src="images/galeri-1.jpg" alt="Dimsum mentai dengan taburan wijen hitam" loading="lazy">
+          <img src="images/galeri-2.jpg" alt="Dimsum mentai bakar close-up" loading="lazy">
+          <img src="images/galeri-3.jpg" alt="Dimsum dengan saus mentai yang gosong cantik" loading="lazy">
+          <img src="images/galeri-4.jpg" alt="Dimsum mentai dalam keranjang bambu" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <!-- LOKASI -->
+    <section class="section section--alt" id="lokasi">
+      <div class="container location">
+        <div>
+          <h2 class="section__title">Lokasi &amp; Jam Buka</h2>
+          <ul class="info">
+            <li><strong>Alamat</strong><span id="infoAddress"></span></li>
+            <li><strong>Jam buka</strong><span id="infoHours"></span></li>
+            <li><strong>Instagram</strong><span id="infoInstagram"></span></li>
+          </ul>
+          <div class="hero__cta">
+            <a href="#" class="btn js-wa">Pesan via WhatsApp</a>
+            <a href="#" class="btn btn--ghost" id="mapsBtn" target="_blank" rel="noopener">Buka Google Maps</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__thanks">Terima Kasih Atas Kunjungan Anda</p>
+      <p class="footer__copy">&copy; <span id="year"></span> Dimsum Mentaiku</p>
+    </div>
+  </footer>
+
+  <!-- Tombol WhatsApp melayang -->
+  <a href="#" class="fab js-wa" aria-label="Chat WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5-.1-.2-1.2-1.6-1.2-3s.8-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.2c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.7 1.2 1.5 1.9 1 .9 1.9 1.2 2.2 1.3.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.8-.1 1.4Z"/></svg>
+  </a>
+
+  <!-- Bar keranjang -->
+  <div class="cartbar" id="cartBar" hidden>
+    <div class="cartbar__info">
+      <strong id="cartCount">0 item</strong>
+      <span id="cartTotal">Rp0</span>
+    </div>
+    <button type="button" class="cartbar__clear" id="cartClear">Kosongkan</button>
+    <a href="#" class="btn btn--small" id="cartSend">Pesan via WhatsApp</a>
+  </div>
+
+  <script src="js/menu.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
