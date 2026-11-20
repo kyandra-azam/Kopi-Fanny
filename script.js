@@ -1,5 +1,6 @@
 /* ============================================================
-   Logika halaman: render menu, keranjang sederhana, link WhatsApp
+   Logika halaman: render menu, keranjang sederhana, link WhatsApp,
+   link aplikasi pesan-antar, dan data SEO lokal.
    Data diambil dari js/menu.js. Tidak ada login & tidak ada server.
    ============================================================ */
 
@@ -45,12 +46,13 @@
     return { item: item, variant: variant };
   }
 
-  function cartLines() {
+  // onlyId (opsional): hanya ambil baris milik satu menu
+  function cartLines(onlyId) {
     var lines = [];
     Object.keys(cart).forEach(function (key) {
       var qty = cart[key];
       var found = findLine(key);
-      if (found && qty > 0) {
+      if (found && qty > 0 && (!onlyId || found.item.id === onlyId)) {
         lines.push({
           name: found.item.name,
           label: found.variant.label,
@@ -60,6 +62,29 @@
       }
     });
     return lines;
+  }
+
+  /* ---------- pesan WhatsApp ---------- */
+  function buildMessage(onlyId) {
+    var lines = cartLines(onlyId);
+    var total = 0;
+    var text = "Halo " + SITE.name + ", saya mau pesan:\n";
+    lines.forEach(function (l) {
+      var sub = l.price * l.qty;
+      total += sub;
+      text += "- " + l.name + " (" + l.label + ") x" + l.qty + " = " + rupiah(sub) + "\n";
+    });
+    text += "\nTotal: " + rupiah(total) + "\n\nNama:\nAlamat / ambil di tempat:";
+    return text;
+  }
+
+  // Tombol "Pesan" di tiap kartu: pakai jumlah yang sudah dipilih,
+  // kalau belum memilih, tanyakan menu + pilihan porsinya.
+  function itemOrderLink(item) {
+    if (cartLines(item.id).length > 0) return waLink(buildMessage(item.id));
+    var opts = item.variants.map(function (v) { return v.label + " (" + rupiah(v.price) + ")"; }).join(" / ");
+    return waLink("Halo " + SITE.name + ", saya mau pesan " + item.name + ".\nPilihan: " + opts +
+      "\nJumlah: \n\nNama:\nAlamat / ambil di tempat:");
   }
 
   /* ---------- render menu ---------- */
@@ -84,7 +109,8 @@
         "</div></div>";
     }).join("");
 
-    card.innerHTML = head + '<div class="rows">' + rows + "</div>";
+    card.innerHTML = head + '<div class="rows">' + rows + "</div>" +
+      '<a class="card__order" data-item="' + item.id + '" href="#" target="_blank" rel="noopener">Pesan ' + item.name + " via WhatsApp</a>";
     return card;
   }
 
@@ -95,6 +121,14 @@
     extra.innerHTML = "";
     MENU.forEach(function (i) { grid.appendChild(renderCard(i)); });
     EXTRAS.forEach(function (i) { extra.appendChild(renderCard(i)); });
+    refreshItemLinks();
+  }
+
+  function refreshItemLinks() {
+    document.querySelectorAll(".card__order").forEach(function (a) {
+      var item = allItems.filter(function (i) { return i.id === a.getAttribute("data-item"); })[0];
+      if (item) a.href = itemOrderLink(item);
+    });
   }
 
   /* ---------- update tampilan keranjang ---------- */
@@ -104,19 +138,6 @@
     var qty = cart[key] || 0;
     row.querySelector(".stepper__qty").textContent = qty;
     row.querySelector('[data-act="minus"]').disabled = qty === 0;
-  }
-
-  function buildMessage() {
-    var lines = cartLines();
-    var total = 0;
-    var text = "Halo " + SITE.name + ", saya mau pesan:\n";
-    lines.forEach(function (l) {
-      var sub = l.price * l.qty;
-      total += sub;
-      text += "- " + l.name + " (" + l.label + ") x" + l.qty + " = " + rupiah(sub) + "\n";
-    });
-    text += "\nTotal: " + rupiah(total) + "\n\nNama:\nAlamat / ambil di tempat:";
-    return text;
   }
 
   function refreshBar() {
@@ -130,6 +151,7 @@
     $("#cartCount").textContent = count + " item";
     $("#cartTotal").textContent = rupiah(total);
     $("#cartSend").href = count > 0 ? waLink(buildMessage()) : "#";
+    refreshItemLinks();
   }
 
   function changeQty(key, delta) {
@@ -169,7 +191,29 @@
     $("#cartSend").rel = "noopener";
   }
 
+  /* ---------- pesan lewat aplikasi (GoFood, GrabFood, ShopeeFood) ---------- */
+  function setupDelivery() {
+    var names = { gofood: "GoFood", grabfood: "GrabFood", shopeefood: "ShopeeFood" };
+    var wrap = $("#deliveryLinks");
+    var any = false;
+    Object.keys(names).forEach(function (k) {
+      var url = SITE.delivery && SITE.delivery[k];
+      if (!url) return;
+      any = true;
+      var a = document.createElement("a");
+      a.className = "btn btn--ghost";
+      a.href = url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = names[k];
+      wrap.appendChild(a);
+    });
+    $("#delivery").hidden = !any;
+  }
+
   /* ---------- lokasi & footer ---------- */
+  function placeholder(v) { return !v || v.charAt(0) === "["; }
+
   function setupInfo() {
     $("#infoAddress").textContent = SITE.address;
     $("#infoHours").textContent = SITE.hours;
@@ -189,13 +233,44 @@
     var maps = $("#mapsBtn");
     if (SITE.mapsUrl) {
       maps.href = SITE.mapsUrl;
-    } else if (SITE.address && SITE.address.charAt(0) !== "[") {
+    } else if (!placeholder(SITE.address)) {
       maps.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(SITE.address);
     } else {
       maps.hidden = true;
     }
 
     $("#year").textContent = new Date().getFullYear();
+  }
+
+  /* ---------- SEO lokal: judul dengan kota + data terstruktur ---------- */
+  function setupSeo() {
+    if (SITE.city) {
+      document.title = SITE.name + " " + SITE.city + " | Dimsum Mentai, Bakar & Saus Keju";
+    }
+
+    var prices = [];
+    MENU.concat(EXTRAS).forEach(function (i) {
+      i.variants.forEach(function (v) { prices.push(v.price); });
+    });
+    var data = {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": SITE.name,
+      "servesCuisine": "Dimsum",
+      "image": (SITE.siteUrl ? SITE.siteUrl.replace(/\/$/, "") + "/" : "") + "images/hero.jpg",
+      "telephone": "+" + SITE.waNumber,
+      "priceRange": rupiah(Math.min.apply(null, prices)) + " - " + rupiah(Math.max.apply(null, prices))
+    };
+    if (SITE.siteUrl) data.url = SITE.siteUrl;
+    if (!placeholder(SITE.address)) {
+      data.address = { "@type": "PostalAddress", "streetAddress": SITE.address, "addressLocality": SITE.city || undefined, "addressCountry": "ID" };
+    }
+    if (SITE.instagram) data.sameAs = ["https://instagram.com/" + SITE.instagram];
+
+    var tag = document.createElement("script");
+    tag.type = "application/ld+json";
+    tag.textContent = JSON.stringify(data);
+    document.head.appendChild(tag);
   }
 
   /* ---------- header bayangan saat scroll ---------- */
@@ -210,7 +285,13 @@
   renderMenu();
   bindEvents();
   setupWaButtons();
+  setupDelivery();
   setupInfo();
+  setupSeo();
   setupHeader();
   refreshBar();
+
+  if (placeholder(SITE.address) || SITE.waNumber === "6281234567890") {
+    console.warn("[Dimsum Mentaiku] Isi nomor WhatsApp, alamat, dan jam buka di js/menu.js sebelum rilis.");
+  }
 })();

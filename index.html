@@ -10,6 +10,10 @@
   <meta property="og:description" content="Lihat menu dan harga, pesan langsung lewat WhatsApp.">
   <meta property="og:image" content="images/hero.jpg">
   <meta property="og:type" content="website">
+  <meta property="og:locale" content="id_ID">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A5%9F%3C/text%3E%3C/svg%3E">
+  <link rel="preload" as="image" href="images/hero.webp" type="image/webp">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,6 +21,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <a class="skip" href="#menu">Lompat ke menu</a>
 
   <header class="header" id="top">
     <div class="container header__inner">
@@ -48,7 +53,10 @@
           </div>
         </div>
         <figure class="hero__photo">
-          <img src="images/hero.jpg" alt="Dimsum mentai bakar dalam keranjang bambu" width="1400" height="650">
+          <picture>
+            <source srcset="images/hero.webp" type="image/webp">
+            <img src="images/hero.jpg" alt="Dimsum mentai bakar dalam keranjang bambu" width="1400" height="650" fetchpriority="high">
+          </picture>
         </figure>
       </div>
     </section>
@@ -62,6 +70,11 @@
 
         <h3 class="subtitle">Tambahan</h3>
         <div class="menu-grid menu-grid--single" id="extraGrid"></div>
+
+        <div class="delivery" id="delivery" hidden>
+          <h3 class="subtitle">Atau pesan lewat aplikasi</h3>
+          <div class="delivery__links" id="deliveryLinks"></div>
+        </div>
       </div>
     </section>
 
@@ -82,10 +95,10 @@
       <div class="container">
         <h2 class="section__title">Galeri</h2>
         <div class="gallery">
-          <img src="images/galeri-1.jpg" alt="Dimsum mentai dengan taburan wijen hitam" loading="lazy">
-          <img src="images/galeri-2.jpg" alt="Dimsum mentai bakar close-up" loading="lazy">
-          <img src="images/galeri-3.jpg" alt="Dimsum dengan saus mentai yang gosong cantik" loading="lazy">
-          <img src="images/galeri-4.jpg" alt="Dimsum mentai dalam keranjang bambu" loading="lazy">
+          <picture><source srcset="images/galeri-1.webp" type="image/webp"><img src="images/galeri-1.jpg" alt="Dimsum mentai dengan taburan wijen hitam" width="800" height="545" loading="lazy"></picture>
+          <picture><source srcset="images/galeri-2.webp" type="image/webp"><img src="images/galeri-2.jpg" alt="Dimsum mentai bakar close-up" width="800" height="562" loading="lazy"></picture>
+          <picture><source srcset="images/galeri-3.webp" type="image/webp"><img src="images/galeri-3.jpg" alt="Dimsum dengan saus mentai yang gosong" width="800" height="497" loading="lazy"></picture>
+          <picture><source srcset="images/galeri-4.webp" type="image/webp"><img src="images/galeri-4.jpg" alt="Dimsum mentai dalam keranjang bambu" width="800" height="476" loading="lazy"></picture>
         </div>
       </div>
     </section>
@@ -128,7 +141,7 @@
       <span id="cartTotal">Rp0</span>
     </div>
     <button type="button" class="cartbar__clear" id="cartClear">Kosongkan</button>
-    <a href="#" class="btn btn--small" id="cartSend">Pesan via WhatsApp</a>
+    <a href="#" class="btn btn--small" id="cartSend">Pesan via WA</a>
   </div>
 
   <script src="js/menu.js"></script>

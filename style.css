@@ -185,6 +185,38 @@ a:focus-visible, button:focus-visible {
 .stepper__btn:disabled { opacity: .4; cursor: default; }
 .stepper__qty { min-width: 32px; text-align: center; font-weight: 700; font-size: 18px; }
 
+.card__order {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin-top: 14px;
+  border: 2px solid var(--cream);
+  border-radius: 999px;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+}
+.card__order:hover { border-color: var(--accent); background: var(--accent); color: var(--white); }
+
+/* ---------- pesan lewat aplikasi ---------- */
+.delivery[hidden] { display: none; }
+.delivery .subtitle { margin-top: 48px; }
+.delivery__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+
+.skip {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--ivory);
+}
+.skip:focus { top: 12px; }
+
 /* ---------- cara pesan ---------- */
 .steps { display: grid; gap: 20px; margin: 32px 0 0; padding: 0; list-style: none; }
 .steps li { display: flex; gap: 16px; align-items: flex-start; }
@@ -204,8 +236,10 @@ a:focus-visible, button:focus-visible {
 
 /* ---------- galeri ---------- */
 .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 32px; }
+.gallery picture { display: block; }
 .gallery img {
   width: 100%;
+  height: auto;
   aspect-ratio: 1;
   object-fit: cover;
   border-radius: 16px;
@@ -262,6 +296,7 @@ body.has-cart .fab { bottom: 96px; }
   box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
 }
 .cartbar[hidden] { display: none; }
+.cartbar .btn { white-space: nowrap; padding: 0 18px; }
 .cartbar__info { display: flex; flex-direction: column; line-height: 1.25; margin-right: auto; }
 .cartbar__info strong { font-size: 14px; font-weight: 500; opacity: .8; }
 .cartbar__info span { font-size: 18px; font-weight: 700; }
