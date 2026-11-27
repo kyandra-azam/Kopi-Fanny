@@ -1,7 +1,7 @@
 /* ============================================================
-   Logika halaman: render menu, keranjang sederhana, link WhatsApp,
-   link aplikasi pesan-antar, dan data SEO lokal.
-   Data diambil dari js/menu.js. Tidak ada login & tidak ada server.
+   Logika halaman: render menu, keranjang, link WhatsApp,
+   menu mobile, dan data SEO lokal. Tanpa login, tanpa server.
+   Data diambil dari menu.js. Animasi ada di motion.js.
    ============================================================ */
 
 (function () {
@@ -9,12 +9,17 @@
 
   var STORAGE_KEY = "dimsum-mentaiku-cart";
   var cart = loadCart(); // { "mentai|4 pcs": 2, ... }
+  var allItems = MENU.concat(EXTRAS);
 
   var $ = function (sel) { return document.querySelector(sel); };
 
   /* ---------- util ---------- */
   function rupiah(n) {
     return "Rp" + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+
+  function placeholder(v) {
+    return !v || v.charAt(0) === "[";
   }
 
   function loadCart() {
@@ -34,9 +39,7 @@
     return "https://wa.me/" + SITE.waNumber + "?text=" + encodeURIComponent(text);
   }
 
-  /* ---------- cari item dari kunci keranjang ---------- */
-  var allItems = MENU.concat(EXTRAS);
-
+  /* ---------- keranjang ---------- */
   function findLine(key) {
     var parts = key.split("|");
     var item = allItems.filter(function (i) { return i.id === parts[0]; })[0];
@@ -64,7 +67,6 @@
     return lines;
   }
 
-  /* ---------- pesan WhatsApp ---------- */
   function buildMessage(onlyId) {
     var lines = cartLines(onlyId);
     var total = 0;
@@ -78,8 +80,8 @@
     return text;
   }
 
-  // Tombol "Pesan" di tiap kartu: pakai jumlah yang sudah dipilih,
-  // kalau belum memilih, tanyakan menu + pilihan porsinya.
+  // Tombol pesan di tiap kartu: pakai jumlah yang sudah dipilih,
+  // kalau belum memilih, tanyakan menu dan pilihan porsinya.
   function itemOrderLink(item) {
     if (cartLines(item.id).length > 0) return waLink(buildMessage(item.id));
     var opts = item.variants.map(function (v) { return v.label + " (" + rupiah(v.price) + ")"; }).join(" / ");
@@ -100,7 +102,7 @@
       var key = item.id + "|" + v.label;
       var qty = cart[key] || 0;
       return '<div class="row" data-key="' + key + '">' +
-        '<div class="row__info"><span class="row__label">' + v.label + '</span>' +
+        '<div class="row__info"><span class="row__label">' + v.label + "</span>" +
         '<span class="price">' + rupiah(v.price) + "</span></div>" +
         '<div class="stepper">' +
         '<button type="button" class="stepper__btn" data-act="minus" aria-label="Kurangi ' + item.name + " " + v.label + '"' + (qty === 0 ? " disabled" : "") + ">&minus;</button>" +
@@ -131,7 +133,6 @@
     });
   }
 
-  /* ---------- update tampilan keranjang ---------- */
   function refreshRow(key) {
     var row = document.querySelector('.row[data-key="' + key + '"]');
     if (!row) return;
@@ -162,7 +163,6 @@
     refreshBar();
   }
 
-  /* ---------- event ---------- */
   function bindEvents() {
     document.addEventListener("click", function (e) {
       var btn = e.target.closest(".stepper__btn");
@@ -212,8 +212,6 @@
   }
 
   /* ---------- lokasi & footer ---------- */
-  function placeholder(v) { return !v || v.charAt(0) === "["; }
-
   function setupInfo() {
     $("#infoAddress").textContent = SITE.address;
     $("#infoHours").textContent = SITE.hours;
@@ -242,28 +240,34 @@
     $("#year").textContent = new Date().getFullYear();
   }
 
-  /* ---------- SEO lokal: judul dengan kota + data terstruktur ---------- */
+  /* ---------- SEO lokal: judul dengan kota + data bisnis ---------- */
   function setupSeo() {
     if (SITE.city) {
       document.title = SITE.name + " " + SITE.city + " | Dimsum Mentai, Bakar & Saus Keju";
     }
 
     var prices = [];
-    MENU.concat(EXTRAS).forEach(function (i) {
+    allItems.forEach(function (i) {
       i.variants.forEach(function (v) { prices.push(v.price); });
     });
+
     var data = {
       "@context": "https://schema.org",
       "@type": "Restaurant",
       "name": SITE.name,
       "servesCuisine": "Dimsum",
-      "image": (SITE.siteUrl ? SITE.siteUrl.replace(/\/$/, "") + "/" : "") + "images/hero.jpg",
+      "image": (SITE.siteUrl ? SITE.siteUrl.replace(/\/$/, "") + "/" : "") + "hero.jpg",
       "telephone": "+" + SITE.waNumber,
       "priceRange": rupiah(Math.min.apply(null, prices)) + " - " + rupiah(Math.max.apply(null, prices))
     };
     if (SITE.siteUrl) data.url = SITE.siteUrl;
     if (!placeholder(SITE.address)) {
-      data.address = { "@type": "PostalAddress", "streetAddress": SITE.address, "addressLocality": SITE.city || undefined, "addressCountry": "ID" };
+      data.address = {
+        "@type": "PostalAddress",
+        "streetAddress": SITE.address,
+        "addressLocality": SITE.city || undefined,
+        "addressCountry": "ID"
+      };
     }
     if (SITE.instagram) data.sameAs = ["https://instagram.com/" + SITE.instagram];
 
@@ -281,6 +285,30 @@
     onScroll();
   }
 
+  /* ---------- menu mobile (burger) ---------- */
+  function setupNav() {
+    var btn = $(".burger");
+    var nav = $("#nav");
+
+    function setOpen(open) {
+      btn.setAttribute("aria-expanded", String(open));
+      btn.setAttribute("aria-label", open ? "Tutup menu navigasi" : "Buka menu navigasi");
+      nav.classList.toggle("is-open", open);
+    }
+
+    btn.addEventListener("click", function () {
+      setOpen(btn.getAttribute("aria-expanded") !== "true");
+    });
+
+    nav.addEventListener("click", function (e) {
+      if (e.target.tagName === "A") setOpen(false);
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") setOpen(false);
+    });
+  }
+
   /* ---------- mulai ---------- */
   renderMenu();
   bindEvents();
@@ -289,9 +317,10 @@
   setupInfo();
   setupSeo();
   setupHeader();
+  setupNav();
   refreshBar();
 
   if (placeholder(SITE.address) || SITE.waNumber === "6281234567890") {
-    console.warn("[Dimsum Mentaiku] Isi nomor WhatsApp, alamat, dan jam buka di js/menu.js sebelum rilis.");
+    console.warn("[Dimsum Mentaiku] Isi nomor WhatsApp, alamat, dan jam buka di menu.js sebelum rilis.");
   }
 })();

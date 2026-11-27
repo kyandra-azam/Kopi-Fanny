@@ -17,7 +17,7 @@ const SITE = {
   delivery: {
     gofood: "",
     grabfood: "",
-    shopeefood: "",
+    shopeefood: ""
   }
 };
 
